@@ -2,11 +2,12 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pickle
 import numpy as np
+import os
 
 app = Flask(__name__)
 CORS(app)
 
-# Load Models
+# Load models
 cervical_model = pickle.load(open("cervical_model.pkl", "rb"))
 breast_model = pickle.load(open("breast_model.pkl", "rb"))
 
@@ -14,29 +15,36 @@ breast_model = pickle.load(open("breast_model.pkl", "rb"))
 def home():
     return "OncoPredict API Running"
 
-# Cervical Cancer Prediction
+# Cervical Prediction
 @app.route("/predict_cervical", methods=["POST"])
 def predict_cervical():
 
     data = request.json["features"]
 
-    prediction = cervical_model.predict([data])
+    # Convert into numpy array
+    features = np.array(data).reshape(1, -1)
+
+    prediction = cervical_model.predict(features)
 
     return jsonify({
         "prediction": int(prediction[0])
     })
 
-# Breast Cancer Prediction
+# Breast Prediction
 @app.route("/predict_breast", methods=["POST"])
 def predict_breast():
 
     data = request.json["features"]
 
-    prediction = breast_model.predict([data])
+    # Convert into numpy array
+    features = np.array(data).reshape(1, -1)
+
+    prediction = breast_model.predict(features)
 
     return jsonify({
         "prediction": int(prediction[0])
     })
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)vv
