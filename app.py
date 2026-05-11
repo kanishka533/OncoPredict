@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# Load models
+# Load Models
 cervical_model = pickle.load(open("cervical_model.pkl", "rb"))
 breast_model = pickle.load(open("breast_model.pkl", "rb"))
 
@@ -30,6 +30,7 @@ def predict_cervical():
         })
 
     except Exception as e:
+
         return jsonify({
             "error": str(e)
         })
@@ -49,6 +50,7 @@ def predict_breast():
         })
 
     except Exception as e:
+
         return jsonify({
             "error": str(e)
         })
